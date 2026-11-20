@@ -1,0 +1,33 @@
+# Project:      ci-test-manifests
+# File:         .ci-negative/schema-invalid.yaml
+# Purpose:      Expected-outcome contract for the kubeconform negative case
+# License:      FSL-1.1-ALv2
+# Copyright:    (c) 2026 HYPERI PTY LIMITED
+#
+# DELIBERATE FAILURE. DO NOT FIX. Read .ci-negative/README.md first.
+
+case: schema-invalid
+patch: schema-invalid.patch
+branch: expect-fail/schema-invalid
+
+# The assertion. A run that passes, or fails somewhere other than the
+# `k8s + IaC linting` job, is the failure - not the red run itself.
+# `stage` is matched against the JOB name, which is not the
+# `hyperi-ci lint-manifests` command that job runs.
+expect: fail
+stage: k8s + IaC linting
+reason: kubeconform
+
+tools:
+  - kubeconform
+
+# What will quietly disarm this case:
+#
+#   - `replicas: "three"`. An integer there is a valid Deployment and the
+#     case stops proving anything. The quoted string IS the case.
+#   - kube-linter and checkov run in the same job as ADVISORIES. Only
+#     kubeconform gates, so only a schema break fails this stage.
+notes: |
+  The failing job is the fixture's own `k8s + IaC linting`, which runs
+  `hyperi-ci lint-manifests .`. It is not gated by run-checks, so it
+  fails on a branch push as well as a pull request.

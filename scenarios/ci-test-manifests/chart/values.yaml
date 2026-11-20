@@ -1,0 +1,16 @@
+# Project:   ci-test-manifests
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+replicaCount: 1
+
+image:
+  repository: python
+  tag: "3.12-slim"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80

@@ -1,0 +1,18 @@
+# Project:   ci-test-manifests
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# A plain (already-rendered) manifest - not part of the Helm chart, so
+# hyperi-ci discovers it as a loose manifest and schema-validates it
+# directly with kubeconform.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+  labels:
+    app.kubernetes.io/name: web
+    app.kubernetes.io/managed-by: kubectl
+data:
+  APP_NAME: "web"
+  LOG_LEVEL: "info"
+  GREETING: "hello from ci-test-manifests"

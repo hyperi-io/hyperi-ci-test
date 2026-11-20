@@ -1,0 +1,39 @@
+# expect: fail / stage: lint-manifests / reason: kubeconform
+#
+# DO NOT APPLY / DO NOT FIX. Deliberate planted failure for the hyperi-ci
+# fleet e2e sweep (branch-mode plan, decision 9). The sweep applies this
+# on a throwaway `expect-fail/schema-invalid` branch and asserts CI fails
+# at the lint-manifests stage on kubeconform. Applying it adds a manifest
+# whose `replicas` is the string "three" where the Kubernetes schema
+# requires an integer -> kubeconform marks it invalid and the
+# `hyperi-ci lint-manifests` gate fails. Never apply on main; never
+# repair the fixture from it.
+diff --git a/manifests/bad-deployment.yaml b/manifests/bad-deployment.yaml
+new file mode 100644
+index 0000000..9f57166
+--- /dev/null
++++ b/manifests/bad-deployment.yaml
+@@ -0,0 +1,23 @@
++# PLANTED NEGATIVE CASE - do not fix. replicas must be an integer;
++# "three" is a string, so kubeconform rejects this manifest.
++apiVersion: apps/v1
++kind: Deployment
++metadata:
++  name: bad-web
++  labels:
++    app.kubernetes.io/name: bad-web
++spec:
++  replicas: "three"
++  selector:
++    matchLabels:
++      app.kubernetes.io/name: bad-web
++  template:
++    metadata:
++      labels:
++        app.kubernetes.io/name: bad-web
++    spec:
++      containers:
++        - name: web
++          image: "python:3.12-slim"
++          ports:
++            - containerPort: 80
