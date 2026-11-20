@@ -1,0 +1,58 @@
+# Project:   ci-test-python-lib
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Python library variant in the hyperi-ci test matrix. Sibling repo:
+#   ci-test-python-app  — application variant (Dockerfile, GHCR push)
+#
+# Library-only — no [project.scripts], no Dockerfile. The container
+# detector classifies this as library-only and skips the container
+# build stage entirely. Publish target is PyPI only.
+
+language: python
+
+quality:
+  enabled: true
+
+test:
+  enabled: true
+
+build:
+  enabled: true
+  type: package
+  strategies:
+    - native
+
+publish:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # A falsy destination is hyperi-ci's per-artefact opt-out, so everything up
+  # to the upload still runs and is still under test -- version resolution, the
+  # tag, the sdist/wheel build, the GH Release. Only the leg out to PyPI is
+  # cut.
+  #
+  # Python has NO equivalent of the Rust binary short-circuit: publish/run
+  # goes straight from `destination_for("python")` to twine. The only reason
+  # this repo has not shipped to PyPI is that it lacks the `id-token`
+  # permission and a PYPI_TOKEN, which is an unconfigured credential, not a
+  # guardrail. ci-test-rust-lib published 1.0.0 to crates.io on 2026-07-29
+  # from a routine fixture run; this is the same hole with a different
+  # registry.
+  #
+  # `publish.enabled: false` would stop the whole release stage, which is the
+  # part under test -- cut the destination, not the stage.
+  destinations:
+    python: false
+
+  # Release-asset fixture for hyperi-ci#125: catalogue.yaml is copied into
+  # dist/ before anything uploads, so it must appear on the GitHub Release.
+  # Spelled under `publish:` on purpose -- that also exercises the legacy fold
+  # into `release.assets`.
+  assets:
+    - catalogue.yaml
+  # No `container:` block — defaults to enabled: auto and the detector
+  # short-circuits because the lib has no [project.scripts] entry.

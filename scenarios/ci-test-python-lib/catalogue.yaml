@@ -1,0 +1,16 @@
+# Project:   ci-test-python-lib
+# File:      catalogue.yaml
+# Purpose:   Release asset fixture for release.assets (hyperi-ci#125)
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Not read by anything at build or run time. It exists to be attached to the
+# GitHub Release by `release.assets`, mirroring the dfe-transform-elastic
+# sources.yaml that dfe-infra pins as a content asset.
+
+kind: asset
+name: ci-test-python-lib-catalogue
+entries:
+  - id: smoke
+    description: Placeholder entry so the file has content to checksum.
