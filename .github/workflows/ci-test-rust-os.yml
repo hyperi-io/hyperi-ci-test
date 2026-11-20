@@ -21,6 +21,17 @@ name: ci-test-rust-os
       - "scenarios/ci-test-rust-os/**"
       - ".github/workflows/ci-test-rust-os.yml"
   workflow_dispatch:
+    inputs:
+      runner-mode:
+        type: string
+        required: false
+        default: ""
+        description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+      runner:
+        type: string
+        required: false
+        default: ""
+        description: "Runner for the quality, test and build jobs. The runner-image canary passes its canary scale set."
 
 permissions:
   contents: write
@@ -35,4 +46,8 @@ jobs:
     uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
     with:
       project-dir: scenarios/ci-test-rust-os
+      runner-mode: ${{ inputs.runner-mode || '' }}
+      runner-quality: ${{ inputs.runner || '' }}
+      runner-test: ${{ inputs.runner || '' }}
+      runner-build: ${{ inputs.runner || '' }}
     secrets: inherit
