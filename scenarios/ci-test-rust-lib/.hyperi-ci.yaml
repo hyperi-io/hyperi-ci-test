@@ -1,0 +1,54 @@
+# Project:   ci-test-rust-lib
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Rust library variant in the hyperi-ci test matrix. Sibling repos:
+#   ci-test-rust-app       — single-crate bin
+#   ci-test-rust-workspace — multi-crate workspace
+#
+# Library-only — no Dockerfile, no [[bin]]. The container detector
+# classifies this as library-only and skips the container build stage
+# entirely. Publish target is crates.io only.
+
+language: rust
+
+quality:
+  enabled: true
+
+test:
+  enabled: true
+  coverage: false
+
+build:
+  enabled: true
+  strategies:
+    - native
+  rust:
+    features: all
+    targets: []
+
+release:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # A falsy destination is hyperi-ci's per-artefact opt-out, so everything up
+  # to the upload still runs and is still under test -- version resolution, the
+  # tag, the artefact build, the GH Release. Only the leg out to crates.io is
+  # cut.
+  #
+  # THIS repo is why the rule exists: it published 1.0.0 to crates.io on
+  # 2026-07-29 from a routine fixture run. Nothing about the config was
+  # unusual; a library crate has no binary, so nothing short-circuits it the
+  # way an app is short-circuited, and the upload just happened. A fixture is
+  # a low-scrutiny repo by design, so an automatic path from one to a public
+  # registry is the wrong shape whatever it happens to contain.
+  #
+  # `release.enabled: false` would stop the whole release stage, which is the
+  # part under test -- cut the destination, not the stage.
+  destinations:
+    cargo: false
+  # No `container:` block — defaults to enabled: auto and the detector
+  # short-circuits on library-only crates.

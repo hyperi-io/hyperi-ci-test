@@ -1,0 +1,16 @@
+# Project:   ci-test-rust-workspace
+# Crate:     core (library)
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "ci-test-rust-workspace-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Core library for the workspace test - re-exports scalo's logger"
+
+[dependencies]
+# Inherits version + features from [workspace.dependencies]
+scalo.workspace = true

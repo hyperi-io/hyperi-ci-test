@@ -1,0 +1,50 @@
+# Project:      ci-test-rust-simple
+# File:         .hyperi-ci.yaml
+# Purpose:      HyperI CI configuration for Rust CLI test project
+# License:      BUSL-1.1
+# Copyright:    (c) 2026 HYPERI PTY LIMITED
+#
+# HyperI CI Configuration
+# Documentation: https://github.com/hyperi-io/hyperi-ci/blob/main/docs/README.md
+#
+# Configuration precedence (highest wins):
+#   1. Environment variables (HYPERCI_*)
+#   2. This file (.hyperi-ci.yaml)
+#   3. config/defaults.yaml (hyperi-ci defaults)
+
+# Project language
+language: rust
+
+# Quality checks
+quality:
+  enabled: true
+
+# Testing
+test:
+  enabled: true
+  coverage: false
+  rust:
+    tier: all
+
+# Building
+build:
+  enabled: true
+  strategies:
+    - native
+
+# Publishing (on release)
+release:
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # `enabled: false` used to be the whole block here and it did NOTHING --
+  # hyperi-ci did not read that key then (hyperi-io/hyperi-ci#79). This crate was
+  # only ever safe by accident, because it builds a binary and the Rust
+  # publish handler short-circuits crate publish for binary apps. Change
+  # src/main.rs to src/lib.rs and it would have gone to crates.io, which is
+  # exactly what happened to ci-test-rust-lib on 2026-07-29.
+  #
+  # A falsy destination is the opt-out that works. Everything up to the upload
+  # still runs and is still under test.
+  enabled: true
+  destinations:
+    cargo: false
