@@ -1,17 +1,25 @@
 # Project:   hyperi-ci-test
-# File:      .github/workflows/ci.yml
-# Purpose:   Run each test scenario through hyperi-ci from its own directory
+# File:      .github/workflows/ci-test-rust-os.yml
+# Purpose:   Run the ci-test-rust-os scenario through hyperi-ci
 #
 # License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 
-name: CI
+# One caller per scenario: the path filter runs only the scenarios a change
+# touches, and each scenario gets its own concurrency group.
+name: ci-test-rust-os
 
 "on":
   push:
     branches: ["**"]
+    paths:
+      - "scenarios/ci-test-rust-os/**"
+      - ".github/workflows/ci-test-rust-os.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "scenarios/ci-test-rust-os/**"
+      - ".github/workflows/ci-test-rust-os.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,7 +29,7 @@ permissions:
   packages: write
 
 jobs:
-  rust-os:
+  ci:
     # The scenario dir carries the binary's name, which the container stage
     # and the release names are read from.
     uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
