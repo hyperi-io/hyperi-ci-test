@@ -1,0 +1,6 @@
+[package]
+name = "os-linux"
+description = "Linux-only code; empty on other OSes"
+version.workspace = true
+edition.workspace = true
+license.workspace = true

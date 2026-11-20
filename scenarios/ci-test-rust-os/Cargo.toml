@@ -1,0 +1,57 @@
+# Project:   hyperi-ci-test / ci-test-rust-os
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Windows and macOS failure cases for hyperi-ci's Rust legs: a C dependency
+# (zstd-sys), per-OS crates that compile to nothing elsewhere, the windows
+# crate, jemalloc gated off msvc with mimalloc there, and two binaries.
+
+[package]
+name = "ci-test-rust-os"
+description = "hyperi-ci E2E scenario: one Rust agent built for Linux, Windows and macOS"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "ci-test-rust-os"
+path = "src/main.rs"
+
+[[bin]]
+name = "ci-test-rust-os-probe"
+path = "src/bin/probe.rs"
+
+[dependencies]
+os-core = { path = "crates/core" }
+mimalloc = { version = "0.1.52", optional = true }
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+tikv-jemallocator = { version = "0.7.0", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+os-windows = { path = "crates/windows" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+os-linux = { path = "crates/linux" }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+os-macos = { path = "crates/macos" }
+
+[features]
+default = []
+jemalloc = ["dep:tikv-jemallocator"]
+mimalloc = ["dep:mimalloc"]
+
+[workspace]
+members = ["crates/core", "crates/windows", "crates/linux", "crates/macos"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "BUSL-1.1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

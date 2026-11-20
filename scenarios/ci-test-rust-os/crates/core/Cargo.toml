@@ -1,0 +1,9 @@
+[package]
+name = "os-core"
+description = "Shared code that links a C library (zstd) on every OS"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+zstd = "0.14.4"

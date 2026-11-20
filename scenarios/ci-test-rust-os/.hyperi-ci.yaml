@@ -1,0 +1,34 @@
+# Project:   hyperi-ci-test / ci-test-rust-os
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Windows and macOS legs: each target below gets a GitHub-hosted build leg,
+# and each Windows or macOS runner a Test leg that runs clippy first.
+
+language: rust
+
+quality:
+  enabled: true
+
+test:
+  enabled: true
+  coverage: false
+
+build:
+  enabled: true
+  strategies:
+    - native
+  rust:
+    targets:
+      - x86_64-unknown-linux-gnu
+      - x86_64-pc-windows-msvc
+      - aarch64-apple-darwin
+      - x86_64-apple-darwin
+
+release:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD: every test scenario cuts the crates.io leg.
+  destinations:
+    cargo: false
+  container:
+    enabled: false
