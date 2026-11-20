@@ -11,7 +11,10 @@
 #[global_allocator]
 static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
-#[cfg(all(feature = "mimalloc", not(all(feature = "jemalloc", not(target_env = "msvc")))))]
+#[cfg(all(
+    feature = "mimalloc",
+    not(all(feature = "jemalloc", not(target_env = "msvc")))
+))]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
