@@ -1,0 +1,46 @@
+# Project:    ci-test-python-cli
+# License:    FSL-1.1-ALv2
+# Copyright:  (c) 2026 HYPERI PTY LIMITED
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+*~
+.env
+.env.local
+.env.*.local
+*.log
+dist-bin/
+out/
+test-results/
+coverage/
+*.so
+.coverage.*
+.mypy_cache/
+.ruff_cache/

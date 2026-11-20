@@ -1,0 +1,60 @@
+# Project:   ci-test-python-app
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Python application variant in the hyperi-ci test matrix. Sibling repo:
+#   ci-test-python-lib  — library variant (no Dockerfile, auto-skip)
+#
+# App variant — has [project.scripts] entry + Dockerfile, exercises the
+# custom-mode container build path (Dockerfile detected -> buildx -> GHCR).
+
+language: python
+
+quality:
+  enabled: true
+
+test:
+  enabled: true
+
+build:
+  enabled: true
+  type: app
+  strategies:
+    - native
+
+release:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # A falsy destination is hyperi-ci's per-artefact opt-out, so everything up
+  # to the upload still runs and is still under test -- version resolution, the
+  # tag, the sdist/wheel build, the GH Release, the GHCR container below. Only
+  # the leg out to PyPI is cut.
+  #
+  # Python has NO equivalent of the Rust binary short-circuit: publish/run
+  # goes straight from `destination_for("python")` to twine. The only reason
+  # this repo has not shipped to PyPI is that it lacks the `id-token`
+  # permission and a PYPI_TOKEN, which is an unconfigured credential, not a
+  # guardrail. ci-test-rust-lib published 1.0.0 to crates.io on 2026-07-29
+  # from a routine fixture run; this is the same hole with a different
+  # registry.
+  #
+  # `release.enabled: false` would stop the whole release stage, which is the
+  # part under test -- cut the destination, not the stage.
+  destinations:
+    python: false
+  container:
+    enabled: true
+    dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    # Branch-mode dev images (hyperi-ci branch-mode plan): opted-in PRs
+    # push branch-<slug> + branch-<slug>-sha-<short> dev tags to GHCR
+    # only. Pairs with the HYPERCI_BRANCH_BUILD repo variable and the
+    # scheduled ghcr-prune.yml workflow. This fixture is the fleet
+    # dev-push canary for the python container template.
+    dev_push: true
