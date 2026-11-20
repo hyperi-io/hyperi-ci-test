@@ -1,0 +1,9 @@
+# Project:   ci-test-manifests
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+apiVersion: v2
+name: web
+description: Generic web app chart for the ci-test-manifests linting fixture
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

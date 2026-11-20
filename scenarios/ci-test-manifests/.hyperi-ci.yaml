@@ -1,0 +1,46 @@
+# Project:   ci-test-manifests
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Generic container + k8s + IaC linting fixture. Unlinked from scalo /
+# HyperI libs on purpose - a plain stdlib Python app whose only reason to
+# exist is exercising hyperi-ci's two linting paths:
+#   Path A - `hyperi-ci run quality`: the hadolint gate + droast advisory over
+#            the Dockerfile, then lint-iac minus dockerfile and checkov, which
+#            reports and passes under the shipped `quality.iac: warn`.
+#   Path B - the `k8s + IaC linting` job, hyperi-ci's iac-ci.yml: every
+#            lint-iac dimension over the chart, manifests, .tf and Dockerfile.
+#            kubeconform, tofu and hadolint gate, kube-linter/checkov advise.
+#
+# build + publish are OFF: this fixture validates linting, not the release
+# pipeline, so nothing ships.
+
+language: python
+
+quality:
+  enabled: true
+
+test:
+  enabled: true
+  coverage: false
+
+build:
+  enabled: false
+
+release:
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # `enabled: false` used to be the whole block here and it did NOTHING --
+  # hyperi-ci did not read that key then (hyperi-io/hyperi-ci#79). This repo has a
+  # pyproject.toml and a VERSION file, and `language: python` routes straight
+  # from `destination_for("python")` to `uv publish` with nothing in between, so it
+  # was one credential away from PyPI the whole time.
+  #
+  # A falsy destination is the opt-out that works. Everything up to the upload
+  # still runs and is still under test.
+  enabled: true
+  destinations:
+    python: false
