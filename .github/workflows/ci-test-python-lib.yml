@@ -25,6 +25,11 @@ name: ci-test-python-lib
         required: false
         default: ""
         description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+      runner:
+        type: string
+        required: false
+        default: ""
+        description: "Runner for the quality, test and build jobs. The runner-image canary passes its canary scale set."
 
 permissions:
   contents: write
@@ -38,4 +43,7 @@ jobs:
     with:
       project-dir: scenarios/ci-test-python-lib
       runner-mode: ${{ inputs.runner-mode || '' }}
+      runner-quality: ${{ inputs.runner || '' }}
+      runner-test: ${{ inputs.runner || '' }}
+      runner-build: ${{ inputs.runner || '' }}
     secrets: inherit

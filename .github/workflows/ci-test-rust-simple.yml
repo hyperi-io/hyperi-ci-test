@@ -25,11 +25,16 @@ name: ci-test-rust-simple
         required: false
         default: ""
         description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+      runner:
+        type: string
+        required: false
+        default: ""
+        description: "Runner for the quality, test and build jobs. The runner-image canary passes its canary scale set."
       runner-build:
         type: string
         required: false
         default: ""
-        description: "amd64 build runner, to tell a canary-image break from a hyperi-ci break."
+        description: "amd64 build runner, to tell a canary-image break from a hyperi-ci break. Overrides runner for the build."
       optimize-tier:
         type: string
         required: false
@@ -48,6 +53,8 @@ jobs:
     with:
       project-dir: scenarios/ci-test-rust-simple
       runner-mode: ${{ inputs.runner-mode || '' }}
-      runner-build: ${{ inputs.runner-build || '' }}
+      runner-quality: ${{ inputs.runner || '' }}
+      runner-test: ${{ inputs.runner || '' }}
+      runner-build: ${{ inputs.runner-build || inputs.runner || '' }}
       optimize-tier: ${{ inputs.optimize-tier || '' }}
     secrets: inherit
