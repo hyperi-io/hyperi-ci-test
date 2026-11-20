@@ -1,0 +1,30 @@
+# Project:    ci-test-ts-simple
+# File:       .gitignore
+# License:    FSL-1.1-ALv2
+# Copyright:  (c) 2026 HYPERI PTY LIMITED
+
+node_modules/
+dist/
+coverage/
+*.tgz
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.env.*.local
+*.log
+dist-bin/
+build/
+out/
+test-results/
+*.tsbuildinfo
+.eslintcache
+.cache
+.npm
+.pnpm-store/
+.yarn/

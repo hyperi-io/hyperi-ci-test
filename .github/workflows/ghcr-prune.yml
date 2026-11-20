@@ -1,0 +1,35 @@
+# Project:   hyperi-ci-test
+# File:      .github/workflows/ghcr-prune.yml
+# Purpose:   Nightly prune of each container scenario's branch-mode dev images
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+# Dev tags (branch-* / dev-sha-*) only. GA tags are never touched.
+name: GHCR prune
+
+"on":
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        type: string
+        default: ""
+        description: "'true' to log what would be deleted without deleting."
+
+permissions:
+  contents: read
+
+jobs:
+  prune:
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [ci-test-python-app, ci-test-go-app, ci-test-ts-app]
+    permissions:
+      packages: write
+    uses: hyperi-io/hyperi-ci/.github/workflows/_ghcr-prune.yml@main
+    with:
+      package: ${{ matrix.package }}
+      dry-run: ${{ inputs.dry-run || '' }}

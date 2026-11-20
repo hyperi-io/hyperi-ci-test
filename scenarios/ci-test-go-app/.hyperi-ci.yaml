@@ -1,0 +1,71 @@
+# Project:   ci-test-go-app
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Go application variant in the hyperi-ci test matrix. No Go library
+# variant by design — Go modules are imported via git ref, no separate
+# publish step required.
+
+language: golang
+
+# go.mod carries no description field, so the config opt-out is the only place
+# this can live. It reaches the OCI image label and GHCR's package page.
+description: "hyperi-ci E2E fixture: Go app, four-target build and GHCR dev-push"
+
+quality:
+  enabled: true
+
+test:
+  enabled: true
+  coverage: true
+
+build:
+  enabled: true
+  strategies:
+    - native
+  golang:
+    targets:
+      - linux/amd64
+      - linux/arm64
+      - darwin/amd64
+      - darwin/arm64
+    cgo: false
+
+release:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # Go is the mildest case of the family -- there is no upload. A module is
+  # served from its own repo, and the publish handler only pokes
+  # proxy.golang.org to index a tag sooner than it otherwise would. Nothing
+  # lands anywhere we cannot withdraw.
+  #
+  # Off anyway, for two reasons. A fixture has no business reaching out to
+  # public infrastructure at all, and the value of the rule is that it is the
+  # same rule everywhere -- one exception and the next reader has to work out
+  # which fixtures are safe and why. ci-test-rust-lib published 1.0.0 to
+  # crates.io on 2026-07-29 because its config looked locally reasonable.
+  #
+  # `release.enabled: false` would also stop it -- dispatch.stage_release reads
+  # that key and defaults it to off. Cutting the destination is the better
+  # lever: it survives someone flipping a stage toggle back on.
+  destinations:
+    go: false
+  # This fixture is the fleet's R2 canary -- the only one that uploads binaries
+  # to downloads.hyperi.io, under its own ci-test-go-app/ prefix.
+  binaries: r2-binaries
+  container:
+    enabled: true
+    dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    # Branch-mode dev images (hyperi-ci branch-mode plan): opted-in PRs
+    # push branch-<slug> + branch-<slug>-sha-<short> dev tags to GHCR
+    # only. Pairs with the HYPERCI_BRANCH_BUILD repo variable and the
+    # scheduled ghcr-prune.yml workflow. This fixture is the fleet's
+    # dev-push E2E canary.
+    dev_push: true

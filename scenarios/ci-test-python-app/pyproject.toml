@@ -1,0 +1,67 @@
+# Project:   ci-test-python-app
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ci-test-python-app"
+description = "hyperi-ci E2E fixture: Python app, container custom mode on GHCR"
+requires-python = ">=3.12"
+license = "FSL-1.1-ALv2"
+authors = [{ name = "HYPERI PTY LIMITED" }]
+dynamic = ["version"]
+
+# scalo (successor to hyperi-pylib) is the standard logger/config dep
+# across DFE Python projects. Including it here exercises the wheel-time
+# dep resolution and the runtime import path inside the container.
+# 2.29+ ships the generate-artefacts CLI required by hyperi-ci's
+# generate stage.
+dependencies = [
+    # [metrics] pulls psutil — required because scalo's __init__
+    # eagerly imports the metrics submodule, which fails at import time
+    # without psutil even if metrics aren't used at runtime.
+    "scalo[metrics]>=2.29",
+]
+
+[project.scripts]
+ci-test-python-app = "ci_test_python_app.main:main"
+
+[project.urls]
+Repository = "https://github.com/hyperi-io/ci-test-python-app"
+
+[tool.hatch.version]
+path = "src/ci_test_python_app/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ci_test_python_app"]
+
+[dependency-groups]
+# Quality tools picked up by `uv run` automatically. hyperi-ci's
+# python quality handler invokes `ruff` directly; without it being
+# in the project's venv, CI fails with "Failed to spawn: ruff".
+dev = [
+    "ruff>=0.9",
+    "ty>=0.0.1a0",
+    "pytest>=8",
+    "pytest-cov>=5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "D"]
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
