@@ -1,0 +1,41 @@
+# Project:   hyperi-ci-test
+# File:      .github/workflows/ci-test-rust-lib.yml
+# Purpose:   Run the ci-test-rust-lib scenario through hyperi-ci
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+name: ci-test-rust-lib
+
+"on":
+  push:
+    branches: ["**"]
+    paths:
+      - "scenarios/ci-test-rust-lib/**"
+      - ".github/workflows/ci-test-rust-lib.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "scenarios/ci-test-rust-lib/**"
+      - ".github/workflows/ci-test-rust-lib.yml"
+  workflow_dispatch:
+    inputs:
+      runner-mode:
+        type: string
+        required: false
+        default: ""
+        description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  ci:
+    uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
+    with:
+      project-dir: scenarios/ci-test-rust-lib
+      runner-mode: ${{ inputs.runner-mode || '' }}
+    secrets: inherit

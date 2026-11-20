@@ -1,0 +1,53 @@
+# Project:   hyperi-ci-test
+# File:      .github/workflows/ci-test-rust-simple.yml
+# Purpose:   Run the ci-test-rust-simple scenario through hyperi-ci
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+name: ci-test-rust-simple
+
+"on":
+  push:
+    branches: ["**"]
+    paths:
+      - "scenarios/ci-test-rust-simple/**"
+      - ".github/workflows/ci-test-rust-simple.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "scenarios/ci-test-rust-simple/**"
+      - ".github/workflows/ci-test-rust-simple.yml"
+  workflow_dispatch:
+    inputs:
+      runner-mode:
+        type: string
+        required: false
+        default: ""
+        description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+      runner-build:
+        type: string
+        required: false
+        default: ""
+        description: "amd64 build runner, to tell a canary-image break from a hyperi-ci break."
+      optimize-tier:
+        type: string
+        required: false
+        default: ""
+        description: "'release' to build the release optimisation tier (PGO + BOLT) on a run that publishes nothing."
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  ci:
+    uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
+    with:
+      project-dir: scenarios/ci-test-rust-simple
+      runner-mode: ${{ inputs.runner-mode || '' }}
+      runner-build: ${{ inputs.runner-build || '' }}
+      optimize-tier: ${{ inputs.optimize-tier || '' }}
+    secrets: inherit

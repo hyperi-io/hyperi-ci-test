@@ -1,0 +1,12 @@
+# Project:      ci-test-rust-simple
+# File:         Cargo.toml
+# Purpose:      Package manifest for minimal Rust CLI test project
+# License:      BUSL-1.1
+# Copyright:    (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "ci-test-rust-simple"
+version = "1.0.2"
+edition = "2021"
+description = "hyperi-ci E2E fixture: minimal Rust CLI, the baseline pipeline"
+license = "BUSL-1.1"

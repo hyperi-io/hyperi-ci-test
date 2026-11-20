@@ -1,0 +1,20 @@
+# Project:   ci-test-rust-workspace
+# Crate:     cli (binary)
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "ci-test-rust-workspace-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "CLI binary for the workspace test"
+
+[[bin]]
+name = "ci-test-rust-workspace"
+path = "src/main.rs"
+
+[dependencies]
+ci-test-rust-workspace-core = { path = "../core", version = "1.0.0" }
+scalo.workspace = true

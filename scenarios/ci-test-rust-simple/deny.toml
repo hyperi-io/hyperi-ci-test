@@ -1,0 +1,58 @@
+# Project:      ci-test-rust-simple
+# File:         deny.toml
+# Purpose:      cargo-deny policy so hyperi-ci's `deny` gate actually runs
+# License:      BUSL-1.1
+# Copyright:    (c) 2026 HYPERI PTY LIMITED
+#
+# hyperi-ci skips `cargo deny` when a project has no deny.toml
+# (languages/rust/quality.py). Without this file the `rust.deny: blocking`
+# default never runs a check here, so the E2E fleet cannot tell a passing
+# deny gate from an absent one. Shape follows the HyperI Rust standard,
+# "deny.toml (Required)".
+#
+# The matching negative case is .ci-negative/rust-cve-advisory - it proves
+# the gate BLOCKS. Do not delete either to turn a red run green.
+
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+# Vulnerability, unsound and notice advisories always error - there is no
+# severity knob. Only the three axes below are configurable.
+unmaintained = "workspace"
+yanked = "warn"
+maximum-db-staleness = "P90D"
+ignore = []
+
+[licenses]
+# Allow-list only: anything absent is denied. The first entry is this
+# crate's own licence - cargo deny checks the root package too, and
+# omitting it fails the check before any dependency is looked at.
+allow = [
+    "BUSL-1.1",
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Zlib",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+]
+confidence-threshold = 0.8
+# The allow-list is the HyperI standard one, so most entries go unmatched
+# in a fixture with almost no dependencies. Warning on each would bury the
+# findings that matter.
+unused-allowed-license = "allow"
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+highlight = "all"
+skip = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

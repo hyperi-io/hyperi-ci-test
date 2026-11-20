@@ -1,0 +1,37 @@
+# Project:      ci-test-rust-simple
+# File:         .gitignore
+# Purpose:      Git ignore rules for Rust CLI test project
+# License:      BUSL-1.1
+# Copyright:    (c) 2026 HYPERI PTY LIMITED
+
+# Build output
+/target
+
+# Cargo lock (not committed for test project)
+Cargo.lock
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.env.*.local
+*.log
+dist/
+dist-bin/
+build/
+out/
+test-results/
+coverage/
+target/
+**/*.rs.bk
+*.pdb
+*.profraw
+*.profdata
+coverage-html/
+coverage.lcov
+.cargo/
+!.cargo/config.toml

@@ -1,0 +1,66 @@
+# Project:   ci-test-rust-workspace
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Workspace test in the hyperi-ci matrix. Sibling repos:
+#   ci-test-rust-app  — single-crate bin
+#   ci-test-rust-lib  — single-crate lib
+#
+# Specifically exercises workspace-shape concerns: VERSION sync across
+# N Cargo.toml files, [workspace.dependencies] inheritance, and
+# workspace-aware quality / container handlers.
+
+language: rust
+
+quality:
+  enabled: true
+  rust:
+    feature_matrix:
+      enabled: false
+      reason: "workspace has bin-only members; cargo-hack --each-feature check --lib fails per-member when the member has no lib target. Tracked: hyperi-ci needs per-package lib detection for workspace iteration."
+
+test:
+  enabled: true
+  coverage: false
+
+build:
+  enabled: true
+  strategies:
+    - native
+  rust:
+    features: all
+    targets:
+      - x86_64-unknown-linux-gnu
+      - aarch64-unknown-linux-gnu
+
+release:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # A falsy destination is hyperi-ci's per-artefact opt-out, so everything up
+  # to the upload still runs and is still under test -- version resolution, the
+  # tag, the artefact build, the GH Release, the GHCR container. Only the leg
+  # out to crates.io is cut.
+  #
+  # It matters more here than in a single-crate fixture: a workspace publishes
+  # per member, so the blast radius is every publishable crate under
+  # `members`, not one name. ci-test-rust-lib published 1.0.0 to crates.io on
+  # 2026-07-29 from a routine fixture run and that was a single crate.
+  #
+  # `release.enabled: false` would stop the whole release stage, which is the
+  # part under test -- cut the destination, not the stage.
+  destinations:
+    cargo: false
+  binaries: both
+  container:
+    enabled: true
+    dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
+      - linux/arm64
+
+workspace:
+  enabled: auto

@@ -1,0 +1,29 @@
+# Project:   ci-test-rust-lib
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "ci-test-rust-lib"
+version = "1.0.0"
+edition = "2021"
+# Floor set by scalo, whose manifest declares rust-version 1.95.
+rust-version = "1.95"
+license = "FSL-1.1-ALv2"
+description = "hyperi-ci E2E fixture: Rust library, container auto-skip"
+authors = ["HYPERI PTY LIMITED"]
+
+# Library-only — no [[bin]] target. hyperi-ci's container detector
+# classifies this as library-only and skips the container build stage
+# entirely. The publish target is crates.io only.
+
+[dependencies]
+# scalo (crates.io) -- the successor to the archived hyperi-rustlib.
+# `default-features = false` drops scalo's default `config` feature; the
+# logger is this fixture's whole public surface.
+scalo = { version = ">=2.10.7, <3", default-features = false, features = ["logger"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+opt-level = 3

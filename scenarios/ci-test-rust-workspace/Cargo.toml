@@ -1,0 +1,46 @@
+# Project:   ci-test-rust-workspace
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# Two-crate workspace test for the hyperi-ci pipeline. Exercises:
+#
+#   1. [workspace.dependencies] inheritance -- scalo version pinned at
+#      workspace root, members consume via .workspace = true.
+#   2. Multi-crate VERSION sync - members set version.workspace = true, so
+#      hyperi-ci stamp-version writes [workspace.package].version once and
+#      both crates inherit it (no per-crate releaserc exec needed).
+#   3. Workspace-aware clippy / feature_matrix / cargo metadata
+#      iteration in hyperi-ci's quality + container handlers.
+#   4. Container build of one workspace member while another member
+#      is a dependency.
+
+[workspace]
+members = ["crates/core", "crates/cli"]
+resolver = "2"
+
+[workspace.package]
+# Repo-level description for the OCI image label, GHCR's package page and the
+# GitHub blurb. Members keep their own [package] description -- a core library
+# and a CLI describe different things -- so nothing inherits this one.
+description = "hyperi-ci E2E fixture: two-crate Rust workspace, version inheritance"
+version = "1.0.5"
+edition = "2021"
+# Floor set by scalo, which is edition 2024 and declares rustc 1.95.
+# The edition stays 2021 -- that is this fixture's own test axis.
+rust-version = "1.95"
+license = "FSL-1.1-ALv2"
+authors = ["HYPERI PTY LIMITED"]
+
+[workspace.dependencies]
+# scalo (crates.io) -- the successor to the archived hyperi-rustlib.
+# Pinned once here, consumed by both members via `scalo.workspace = true`.
+# `default-features = false` drops scalo's default `config` feature.
+# `cli` is the bare clap tier; `cli-service` pulls metrics + worker-pool.
+scalo = { version = ">=2.10.7, <3", default-features = false, features = ["logger", "cli"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+panic = "abort"
+opt-level = 3
