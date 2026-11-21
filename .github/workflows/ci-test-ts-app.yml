@@ -39,7 +39,7 @@ permissions:
 
 jobs:
   ci:
-    uses: hyperi-io/hyperi-ci/.github/workflows/ts-ci.yml@main
+    uses: hyperi-io/hyperi-ci/.github/workflows/ts-ci.yml@fix/workflow-release-outputs
     with:
       project-dir: scenarios/ci-test-ts-app
       # A PR pushes branch-* tags, pruned by ghcr-prune.yml.
