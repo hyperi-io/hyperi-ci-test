@@ -1,0 +1,59 @@
+# Project:   hyperi-ci-test
+# File:      .github/workflows/ci-test-manifests.yml
+# Purpose:   Run the ci-test-manifests scenario through hyperi-ci
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+name: ci-test-manifests
+
+"on":
+  push:
+    branches: ["**"]
+    paths:
+      - "scenarios/ci-test-manifests/**"
+      - ".github/workflows/ci-test-manifests.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "scenarios/ci-test-manifests/**"
+      - ".github/workflows/ci-test-manifests.yml"
+  workflow_dispatch:
+    inputs:
+      runner-mode:
+        type: string
+        required: false
+        default: ""
+        description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+      runner:
+        type: string
+        required: false
+        default: ""
+        description: "Runner for the quality, test and build jobs. The runner-image canary passes its canary scale set."
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  ci:
+    uses: hyperi-io/hyperi-ci/.github/workflows/python-ci.yml@main
+    with:
+      project-dir: scenarios/ci-test-manifests
+      runner-mode: ${{ inputs.runner-mode || '' }}
+      runner-quality: ${{ inputs.runner || '' }}
+      runner-test: ${{ inputs.runner || '' }}
+      runner-build: ${{ inputs.runner || '' }}
+    secrets: inherit
+
+  # The name is the stage .ci-negative/schema-invalid.yaml declares, so keep it.
+  iac:
+    name: k8s + IaC linting
+    permissions:
+      contents: read
+    uses: hyperi-io/hyperi-ci/.github/workflows/iac-ci.yml@main
+    with:
+      project-dir: scenarios/ci-test-manifests
+      runner-mode: ${{ inputs.runner-mode || '' }}

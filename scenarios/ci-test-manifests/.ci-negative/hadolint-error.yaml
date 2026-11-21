@@ -1,0 +1,39 @@
+# Project:      ci-test-manifests
+# File:         .ci-negative/hadolint-error.yaml
+# Purpose:      Expected-outcome contract for the hadolint negative case
+# License:      FSL-1.1-ALv2
+# Copyright:    (c) 2026 HYPERI PTY LIMITED
+#
+# DELIBERATE FAILURE. DO NOT FIX. Read .ci-negative/README.md first.
+
+case: hadolint-error
+patch: hadolint-error.patch
+branch: expect-fail/hadolint-error
+
+# The assertion. A run that passes, or fails somewhere other than the
+# quality stage, is the failure - not the red run itself.
+expect: fail
+stage: quality
+reason: hadolint
+
+tools:
+  - hadolint
+
+rule: DL3004
+rule_url: https://github.com/hadolint/hadolint/wiki/DL3004
+severity: error
+
+# What will quietly disarm this case:
+#
+#   - `sudo` in the Dockerfile is the whole case. DL3004 is the only
+#     ERROR-severity finding the patch plants; a warning-severity one
+#     would leave the gate green.
+#   - the branch commit has to be a release-worthy type (`fix:`), AND the
+#     run has to be a pull_request one. hyperi-ci skips the quality job
+#     for non-bumping commit types, and its plan job skips it for a push
+#     to a non-main branch too, so a bare branch push goes green having
+#     run no gate.
+notes: |
+  hadolint runs inside `hyperi-ci run quality` as part of the container
+  gate, so the failing job is `ci / Quality` and not the fixture's own
+  `k8s + IaC linting` job.
