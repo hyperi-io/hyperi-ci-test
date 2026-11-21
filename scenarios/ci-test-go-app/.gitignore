@@ -1,0 +1,35 @@
+# Project:    ci-test-go-app
+# License:    FSL-1.1-ALv2
+# Copyright:  (c) 2026 HYPERI PTY LIMITED
+
+# Build output
+/bin/
+/dist/
+
+# Compiled binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.env.*.local
+*.log
+dist/
+dist-bin/
+build/
+out/
+test-results/
+coverage/
+*.test
+*.out
+go.work
+go.work.sum

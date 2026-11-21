@@ -1,0 +1,51 @@
+# Project:   hyperi-ci-test
+# File:      .github/workflows/ci-test-ts-app.yml
+# Purpose:   Run the ci-test-ts-app scenario through hyperi-ci
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+name: ci-test-ts-app
+
+"on":
+  push:
+    branches: ["**"]
+    paths:
+      - "scenarios/ci-test-ts-app/**"
+      - ".github/workflows/ci-test-ts-app.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "scenarios/ci-test-ts-app/**"
+      - ".github/workflows/ci-test-ts-app.yml"
+  workflow_dispatch:
+    inputs:
+      runner-mode:
+        type: string
+        required: false
+        default: ""
+        description: "self-hosted runs on the ARC runners. Empty runs on free GitHub runners."
+      runner:
+        type: string
+        required: false
+        default: ""
+        description: "Runner for the quality, test and build jobs. The runner-image canary passes its canary scale set."
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  ci:
+    uses: hyperi-io/hyperi-ci/.github/workflows/ts-ci.yml@main
+    with:
+      project-dir: scenarios/ci-test-ts-app
+      # A PR pushes branch-* tags, pruned by ghcr-prune.yml.
+      branch-build: "true"
+      runner-mode: ${{ inputs.runner-mode || '' }}
+      runner-quality: ${{ inputs.runner || '' }}
+      runner-test: ${{ inputs.runner || '' }}
+      runner-build: ${{ inputs.runner || '' }}
+    secrets: inherit

@@ -1,0 +1,67 @@
+# Project:   ci-test-ts-app
+# File:      .hyperi-ci.yaml
+# Purpose:   HyperI CI configuration
+#
+# License:   FSL-1.1-ALv2
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# TypeScript application variant in the hyperi-ci test matrix. No TS
+# library variant currently -- none in production use yet.
+
+language: typescript
+
+quality:
+  enabled: true
+  typescript:
+    audit:
+      mode: warn
+      reason: >-
+        this fixture gates promotion of the ARC runner images, so a blocking
+        audit lets an advisory in its own transitive dev-dependencies stop the
+        fleet taking a new image, as nanoid GHSA-2v37-7h3g-55p8 did. The canary
+        proves the image, not this repo's dependency hygiene.
+
+test:
+  enabled: true
+  coverage: true
+
+build:
+  enabled: true
+  strategies:
+    - native
+
+release:
+  enabled: true
+  # NO PUBLIC REGISTRY UPLOAD. Every ci-test fixture carries this.
+  #
+  # A falsy destination is hyperi-ci's per-artefact opt-out, so everything up
+  # to the upload still runs and is still under test -- version resolution, the
+  # tag, the package build, the GH Release, the GHCR container below. Only the
+  # leg out to npmjs.com is cut.
+  #
+  # TypeScript has NO equivalent of the Rust binary short-circuit: publish/run
+  # goes straight from `destination_for("npm")` to `npm publish`. The scope is
+  # @hyperi/*, so a stray publish takes an org-scoped name in public, and npm
+  # unpublish is only available for 72 hours. ci-test-rust-lib published 1.0.0
+  # to crates.io on 2026-07-29 from a routine fixture run; this is the same
+  # hole with a different registry.
+  #
+  # `release.enabled: false` would stop the whole release stage, which is the
+  # part under test -- cut the destination, not the stage.
+  destinations:
+    npm: false
+  container:
+    enabled: true
+    dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    # Branch-mode dev images (hyperi-ci branch-mode plan): opted-in PRs
+    # push branch-<slug> + branch-<slug>-sha-<short> dev tags to GHCR
+    # only. Pairs with the HYPERCI_BRANCH_BUILD repo variable and the
+    # scheduled ghcr-prune.yml workflow. This fixture is the fleet
+    # dev-push canary for the node container template.
+    dev_push: true
+
+typescript:
+  package_manager: auto

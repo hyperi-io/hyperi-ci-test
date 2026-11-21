@@ -1,0 +1,9 @@
+# Tool-managed files (semantic-release / npm / uv)
+CHANGELOG.md
+.releaserc.yaml
+package-lock.json
+
+# Build artefacts
+dist/
+node_modules/
+coverage/

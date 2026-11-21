@@ -1,0 +1,29 @@
+{
+  "name": "ci-test-ts-app",
+  "version": "1.0.9",
+  "description": "hyperi-ci E2E fixture: TypeScript app, container custom mode on GHCR",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "check-types": "tsc --noEmit",
+    "format": "prettier --check \"src/**/*.ts\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "FSL-1.1-ALv2",
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^4.1.12",
+    "eslint": "^10.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^4.1.12"
+  }
+}
