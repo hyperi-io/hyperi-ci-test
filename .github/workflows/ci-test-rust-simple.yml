@@ -29,7 +29,7 @@ name: ci-test-rust-simple
         type: string
         required: false
         default: ""
-        description: "Runner for the quality, test and build jobs. The runner-image canary passes its canary scale set."
+        description: "Runner for every x64 job, plan and release tail included. The runner-image canary passes its canary scale set."
       runner-build:
         type: string
         required: false
@@ -55,6 +55,7 @@ jobs:
       runner-mode: ${{ inputs.runner-mode || '' }}
       runner-quality: ${{ inputs.runner || '' }}
       runner-test: ${{ inputs.runner || '' }}
+      runner-default: ${{ inputs.runner || '' }}
       runner-build: ${{ inputs.runner-build || inputs.runner || '' }}
       optimize-tier: ${{ inputs.optimize-tier || '' }}
     secrets: inherit
