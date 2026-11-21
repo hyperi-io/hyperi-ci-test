@@ -39,7 +39,7 @@ permissions:
 
 jobs:
   ci:
-    uses: hyperi-io/hyperi-ci/.github/workflows/python-ci.yml@main
+    uses: hyperi-io/hyperi-ci/.github/workflows/python-ci.yml@fix/runner-default-input
     with:
       project-dir: scenarios/ci-test-manifests
       runner-mode: ${{ inputs.runner-mode || '' }}
@@ -53,7 +53,7 @@ jobs:
     name: k8s + IaC linting
     permissions:
       contents: read
-    uses: hyperi-io/hyperi-ci/.github/workflows/iac-ci.yml@main
+    uses: hyperi-io/hyperi-ci/.github/workflows/iac-ci.yml@fix/runner-default-input
     with:
       project-dir: scenarios/ci-test-manifests
       runner-mode: ${{ inputs.runner-mode || '' }}
