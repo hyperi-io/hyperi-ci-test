@@ -10,3 +10,16 @@ version = "1.0.2"
 edition = "2021"
 description = "hyperi-ci E2E fixture: minimal Rust CLI, the baseline pipeline"
 license = "BUSL-1.1"
+
+# DO NOT FIX - DO NOT BUMP - DO NOT REMOVE.
+#
+# smallvec 1.6.0 carries RUSTSEC-2021-0003 (CVE-2021-25900, CVSS 9.8,
+# heap buffer overflow in SmallVec::insert_many; patched in 1.6.1). It is
+# pinned with `=` on purpose: a caret range resolves to a current, clean
+# smallvec and the case silently stops proving anything.
+#
+# This branch exists to prove hyperi-ci's `rust.audit` and `rust.deny`
+# gates BLOCK rather than warn. CI failing here at the quality stage is
+# the PASS condition. See .ci-negative/rust-cve-advisory.yaml on main.
+[dependencies]
+smallvec = "=1.6.0"
