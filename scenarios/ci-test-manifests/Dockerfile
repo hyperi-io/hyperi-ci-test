@@ -36,6 +36,9 @@ FROM python:3.12-slim
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 
+# PLANTED NEGATIVE CASE - do not fix. sudo trips hadolint DL3004 (error).
+RUN sudo apt-get update
+
 # Run as a non-root user (uid 10001).
 RUN useradd --create-home --uid 10001 --shell /bin/bash appuser
 USER appuser
