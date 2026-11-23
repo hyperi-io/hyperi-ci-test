@@ -39,7 +39,7 @@ permissions:
 
 jobs:
   ci:
-    uses: hyperi-io/hyperi-ci/.github/workflows/go-ci.yml@main
+    uses: hyperi-io/hyperi-ci/.github/workflows/go-ci.yml@fix/secrets-out-of-dep-jobs
     with:
       project-dir: scenarios/ci-test-go-app
       # The dev-image canary: a PR pushes branch-* tags, pruned by ghcr-prune.yml.
