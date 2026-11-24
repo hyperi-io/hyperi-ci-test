@@ -27,4 +27,6 @@ func main() {
 	fmt.Println(utils.Greet("world"))
 	fmt.Printf("2 + 3 = %d\n", utils.Add(2, 3))
 	fmt.Printf("\"racecar\" is a palindrome: %t\n", utils.IsPalindrome("racecar"))
+	// DO NOT FIX - see the DO NOT FIX block in internal/utils/utils.go.
+	fmt.Printf("preferred language: %s\n", utils.PreferredLanguage("en-AU,en;q=0.9"))
 }
